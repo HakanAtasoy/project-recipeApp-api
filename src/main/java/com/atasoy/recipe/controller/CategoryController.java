@@ -4,6 +4,7 @@ import com.atasoy.recipe.dao.CategoryPageResponse;
 import com.atasoy.recipe.model.CategoryModel;
 import com.atasoy.recipe.service.CategoryService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,21 +33,21 @@ public class CategoryController {
         return categoryService.getCategory(categoryId);
     }
 
-    @PostMapping()
-    public void addCategory(@Valid @RequestBody CategoryModel categoryModel,
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public void addCategory(@Valid @RequestPart CategoryModel categoryModel,
                             @RequestPart("imageFile") MultipartFile imageFile) throws IOException {
         categoryService.addCategory(categoryModel, imageFile);
     }
 
-    @PutMapping()
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean updateCategory(@Valid @RequestPart CategoryModel categoryModel,
                                   @RequestPart("imageFile") MultipartFile imageFile) {
         return categoryService.updateCategory(categoryModel, imageFile);
     }
 
     @DeleteMapping("{id}")
-    public void deleteCategory(@PathVariable("id") Integer categoryId) {
-        categoryService.deleteCategory(categoryId);
+    public boolean deleteCategory(@PathVariable("id") Integer categoryId) {
+        return categoryService.deleteCategory(categoryId);
     }
 }
 

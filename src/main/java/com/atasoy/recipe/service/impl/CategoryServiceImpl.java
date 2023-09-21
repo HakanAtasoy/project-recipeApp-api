@@ -2,9 +2,11 @@ package com.atasoy.recipe.service.impl;
 
 import com.atasoy.recipe.dao.CategoryPageResponse;
 import com.atasoy.recipe.entity.Category;
+import com.atasoy.recipe.entity.Recipe;
 import com.atasoy.recipe.mapper.CategoryMapper;
 import com.atasoy.recipe.model.CategoryModel;
 import com.atasoy.recipe.repo.CategoryRepository;
+import com.atasoy.recipe.repo.RecipeRepository;
 import com.atasoy.recipe.service.CategoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,15 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final RecipeRepository recipeRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, RecipeRepository recipeRepository) {
         this.categoryRepository = categoryRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     @Transactional
@@ -80,16 +85,26 @@ public class CategoryServiceImpl implements CategoryService {
 
         return true;
     }
-
+    @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteCategory(Integer categoryId) {
+    public boolean deleteCategory(Integer categoryId) {
         Category oldCategory = categoryRepository.findById(categoryId).orElse(null);
-        if (oldCategory == null) return;
+        if (oldCategory == null) return false;
 
         oldCategory.setDeleted(true);
         oldCategory.setDeleteDate(new Date());
 
+        List<Recipe> recipes = recipeRepository.findByCategoryIdAndDeletedFalse(oldCategory.getId());
+
+        for (Recipe recipe : recipes) {
+            recipe.setDeleted(true);
+            recipe.setDeleteDate(new Date());
+        }
+
         categoryRepository.save(oldCategory);
+        recipeRepository.saveAll(recipes);
+
+        return true;
 
     }
 }

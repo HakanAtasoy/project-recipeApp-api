@@ -55,11 +55,11 @@ public class InitializerServiceImpl implements InitializerService {
         };
 
         String[] usernames = {
-                "ahmet123", "mehmet45", "ayse_78", "fatma99", "musti_56", "emine_27", "ali.k", "s.shahin", "osman.g", "derya_11"
+                "ahmet123", "mehmet45", "ayse_78", "fatma99", "musti_56", "emine_27", "ali.k", "s.shahin", "osman.g", "deniz_11"
         };
 
         String[] passwords = {
-                "ahmetpass", "mehmetpass", "aysepass", "fatmapass", "mustifpass", "eminepass", "alipass", "sehrazatpass", "osmanpass", "deryapass"
+                "ahmetpass", "mehmetpass", "aysepass", "fatmapass", "mustifpass", "eminepass", "alipass", "sehrazatpass", "osmanpass", "denizpass"
         };
 
 // Create a list of users
@@ -80,6 +80,15 @@ public class InitializerServiceImpl implements InitializerService {
 
         userRepository.save(admin2);
 
+        String [] images ={
+                "static/soup.jpg",
+                "static/cooked_food.jpg",
+                "static/ıspanak.jpg",
+                "static/pancake.jpg",
+                "static/spagetti.jpg",
+                "static/pastry.jpg"
+        };
+
         String[] turkishCategories = {
                 "Çorbalar", "Kebaplar", "Salatalar", "Zeytinyağlılar", "Tatlılar", "Mezeler", "Pilavlar", "Çörekler", "Kahvaltılıklar"
         };
@@ -94,7 +103,7 @@ public class InitializerServiceImpl implements InitializerService {
             category.setDescription("Açıklama: " + turkishCategories[i]);
 
             // For simplicity, let's use the same image for all categories
-            ClassPathResource imageResource = new ClassPathResource("static/soup.jpg");
+            ClassPathResource imageResource = new ClassPathResource(images[(i)%6]);
             byte[] imageData = StreamUtils.copyToByteArray(imageResource.getInputStream());
             category.setImageData(imageData);
 
@@ -111,7 +120,7 @@ public class InitializerServiceImpl implements InitializerService {
 // Create a list of recipes
         List<Recipe> recipeList = new ArrayList<>();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 400; i++) {
             Recipe recipe = new Recipe();
             recipe.setName(turkishRecipeNames[random.nextInt(turkishRecipeNames.length)]);
             recipe.setDescription("Tarif açıklaması: " + (i + 1));
@@ -121,7 +130,7 @@ public class InitializerServiceImpl implements InitializerService {
             recipe.setCategoryId((i % turkishCategories.length) + 1); // Set category ID
 
             // For simplicity, let's use the same image for all recipes
-            ClassPathResource imageResource = new ClassPathResource("static/cooked_food.jpg");
+            ClassPathResource imageResource = new ClassPathResource(images[(i)%6]);
             byte[] imageData = StreamUtils.copyToByteArray(imageResource.getInputStream());
             recipe.setImageData(imageData);
 
@@ -132,7 +141,7 @@ public class InitializerServiceImpl implements InitializerService {
 
 
         List<Favorite> favoriteList = new ArrayList<>();
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= 400; i++) {
             for (int j = 1; j <= 4; j++) {
                 Favorite favorite = new Favorite();
                 favorite.setUserId((i + j) % 10 + 1);
@@ -145,22 +154,22 @@ public class InitializerServiceImpl implements InitializerService {
 
         String[] Reviews = {
                 "Ailecek yedik bayıldık! Herkese tavsiye ederiz.",
-                "İdare eder 5/10. ",
+                "Sitede gördüğüm en iyi tatlı tarifi !",
                 "Açıkcası bu tarif neden bu kadar popüler anlamadım.",
-                "Açlıktan ölmemek için yenir o kadar",
-                "Şimdiye kadar bu sitede denediğim en iyi tariflerden gerçekten leziz",
+                "Tadı görünüşüne kıyasla pek güzel değildi.",
+                "Şimdiye kadar bu sitede denediğim en iyi tariflerden, gerçekten leziz",
                 "Eh işte 6/10.",
                 "Bayıldım özellikle sos müthişti.",
                 "Bir daha bu yemeği yapmaktansa 5 tane İbahim Tatlıses'in üzerimde halay çekmesini tercih ederim.",
-                "Bu şahsın yemekleri hep harika oluyor. Yine hayal kırıklığına uğratmadı. 10/10",
+                "Tarifleriniz hep harika oluyor. Yine hayal kırıklığına uğratmadı. 10/10",
         };
 
         List<Review> reviewList = new ArrayList<>();
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= 400; i++) {
             for(int j = 1; j<= 3; j++) {
                 Review review = new Review();
                 review.setUserId((i+j) % 10 + 1);
-                review.setRecipeId(i % 1000 + 1);
+                review.setRecipeId(i % 400 + 1);
                 review.setCreateDate(new Date());
                 review.setDescription(Reviews[random.nextInt(Reviews.length)]);
                 reviewList.add(review);

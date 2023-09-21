@@ -15,6 +15,7 @@ public class RecipeMapper {
         recipeModel.setId(recipe.getId());
         recipeModel.setDescription(recipe.getDescription());
         recipeModel.setCategoryName(recipe.getCategory().getName());
+        recipeModel.setCategoryId(recipe.getCategoryId());
         recipeModel.setUserName(recipe.getUser().getUserName());
         recipeModel.setStatus(1);
         recipeModel.setImageData(recipe.getImageData());

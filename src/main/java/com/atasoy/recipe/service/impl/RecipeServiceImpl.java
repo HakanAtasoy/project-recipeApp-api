@@ -24,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,20 +74,40 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Transactional
     public List<RecipeModel> getRandomRecipes() {
-        // Fetch a larger set of recipes (e.g., 100)
-        List<Recipe> allRecipes = recipeRepository.findAllByDeletedFalse();
+        int count = 6;
+        List<RecipeModel> randomRecipes = new ArrayList<>();
+        Set<Long> usedIds = new HashSet<>();  // Track used IDs to ensure uniqueness
 
-        // Shuffle the list to randomize the order
-        Collections.shuffle(allRecipes);
+        // Get the count of available non-deleted recipes
+        long nonDeletedRecipeCount = recipeRepository.countByDeletedFalse();
+        long maxRecipeId = recipeRepository.count();
 
-        // Get the first 6 recipes from the shuffled list
-        List<Recipe> randomRecipes = allRecipes.subList(0, Math.min(6, allRecipes.size()));
+        // Ensure we have enough non-deleted recipes for the requested count
+        while (randomRecipes.size() < count && usedIds.size() < nonDeletedRecipeCount) {
+            long randomRecipeId = getRandomRecipeId(usedIds, maxRecipeId);
+            Recipe recipe = recipeRepository.findByIdAndDeletedFalse((int) randomRecipeId);
 
-        // Map the random recipes to RecipeModel
-        return randomRecipes.stream()
-                .map(RecipeMapper::toRecipeModel)
-                .collect(Collectors.toList());
+            if (recipe != null) {
+                usedIds.add(randomRecipeId);
+                randomRecipes.add(RecipeMapper.toRecipeModel(recipe));
+            }
+        }
+
+        return randomRecipes;
     }
+
+    private long getRandomRecipeId(Set<Long> usedIds, long maxId) {
+        // Generate a random ID within the valid range and avoid duplicates
+        Random random = new Random();
+        long randomId;
+
+        do {
+            randomId = random.nextInt((int) maxId) + 1;
+        } while (usedIds.contains(randomId));
+
+        return randomId;
+    }
+
 
 
     @Transactional

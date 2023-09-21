@@ -53,22 +53,23 @@ public class RecipeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<RecipePageResponse> getUserRecipes(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "12") Integer pageSize) {
         return recipeService.getUserRecipes(page, pageSize);
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void addRecipe(@Valid @RequestPart RecipeModel recipeModel,
                           @RequestPart("imageFile") MultipartFile imageFile) throws IOException {
         recipeService.addRecipe(recipeModel, imageFile);
     }
 
-    @PutMapping
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public boolean updateRecipe(@Valid @RequestBody RecipeModel recipeModel,
+    public boolean updateRecipe(@Valid @RequestPart RecipeModel recipeModel,
                                 @RequestPart("imageFile") MultipartFile imageFile) {
         return recipeService.updateRecipe(recipeModel, imageFile);
     }

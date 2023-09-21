@@ -16,5 +16,5 @@ public interface CategoryService {
 
     public boolean updateCategory(CategoryModel categoryModel, MultipartFile imageFile);
 
-    public void deleteCategory(Integer categoryId);
+    public boolean deleteCategory(Integer categoryId);
 }

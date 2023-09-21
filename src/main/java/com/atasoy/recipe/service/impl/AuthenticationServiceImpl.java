@@ -52,8 +52,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     Role.ROLE_USER);
             userRepository.save(user);
 
-            var jwtToken = jwtService.generateToken(user);
-
             JwtAuthenticationResponse response = new JwtAuthenticationResponse(true, null, "Kayıt başarılı!", UserMapper.toUserModel(user));
 
             return ResponseEntity.ok(response);

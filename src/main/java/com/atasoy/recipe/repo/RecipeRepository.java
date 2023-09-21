@@ -18,6 +18,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
     Page<Recipe> findByDeletedFalseOrderByCreateDateAsc(Pageable pageable);
 
     List<Recipe> findByDeletedFalseOrderByCreateDateAsc();
+    List<Recipe> findByCategoryIdAndDeletedFalse(Integer categoryId);
 
     Recipe findByIdAndDeletedFalse(Integer recipeId);
 
