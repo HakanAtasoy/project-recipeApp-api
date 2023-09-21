@@ -6,6 +6,7 @@ import com.atasoy.recipe.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,12 +35,14 @@ public class CategoryController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public void addCategory(@Valid @RequestPart CategoryModel categoryModel,
                             @RequestPart("imageFile") MultipartFile imageFile) throws IOException {
         categoryService.addCategory(categoryModel, imageFile);
     }
 
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean updateCategory(@Valid @RequestPart CategoryModel categoryModel,
                                   @RequestPart("imageFile") MultipartFile imageFile) {
         return categoryService.updateCategory(categoryModel, imageFile);
